@@ -1,0 +1,20 @@
+pipeline {
+    agent any
+    stages{
+        stage('checkout'){
+            steps{
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/mullamuri123/java_web_docker_app.git']])
+            }
+        }
+        stage('build'){
+            steps{
+                sh 'mvn package'
+            }
+        }
+        stage('deploy to tomcat'){
+            steps{
+                deploy adapters: [tomcat9(credentialsId: 'c1ec491b-4752-4602-926c-d652553e722e', path: '', url: 'http://52.207.252.77:8080/')], contextPath: null, war: '**/*.war'
+            }
+        }
+    }
+}
